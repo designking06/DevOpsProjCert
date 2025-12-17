@@ -16,23 +16,20 @@ pipeline {
         stage('Install Puppet Agent (Mocked)') {
             steps {
                 sh '''
-                ssh -i ~/.ssh/DevOpsProj.pem ubuntu@3.131.141.176 << EOF
-                  echo "Simulating Puppet Agent install"
-                  sudo apt update
-                  sudo apt install -y puppet-agent || true
-                EOF
-                '''
-            }
+                    ssh -i ~/.ssh/DevOpsProj.pem ubuntu@3.131.141.176 \
+                    "sudo apt update && sudo apt install -y puppet-agent"
+                '''}
         }
 
-        stage('Run Ansible (Dry Run)') {
+        stage('Install Docker w Ansible') {
             steps {
                 sh '''
-                ansible-playbook ansible/install_docker.yml \
-                  -i EC2_PUBLIC_IP, \
-                  --user ubuntu \
-                  --private-key ~/.ssh/DevOpsProj.pem \
-                  --check
+                    export PATH=/opt/homebrew/bin:/usr/local/bin:$PATH
+                    ansible-playbook --version
+                    ansible-playbook ansible/install_docker.yml \
+                      -i 3.131.141.176, \
+                      --user ubuntu \
+                      --private-key ~/.ssh/DevOpsProj.pem
                 '''
             }
         }
