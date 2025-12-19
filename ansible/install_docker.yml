@@ -1,5 +1,5 @@
 - name: Install Docker on Test Server
-  hosts: test
+  hosts: all
   become: true
   tasks:
     - name: Install dependencies

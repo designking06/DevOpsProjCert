@@ -28,8 +28,7 @@ pipeline {
                     ansible-playbook --version
                     ansible-playbook ansible/install_docker.yml \
                       -i 18.222.147.8, \
-                      --user ubuntu \
-                      --private-key ~/.ssh/DevOpsProj.pem
+                      --u ubuntu
                 '''
             }
         }
@@ -38,29 +37,30 @@ pipeline {
             steps {
                 sshagent(credentials: ['DevOpsProjKey']) {
                     sh '''
-                    ssh -o StrictHostKeyChecking=no ubuntu@18.222.147.8 << 'ENDSSH'
-                        # Navigate to repo
-                        cd ~/DevOpsProjCert
+        ssh -o StrictHostKeyChecking=no ubuntu@18.222.147.8 << 'ENDSSH'
+        set -e
 
-                        # Build Docker image from docker/Dockerfile
-                        sudo docker build --no-cache -t webapp:latest -f docker/Dockerfile .
+        # Ensure repo exists
+        if [ ! -d "$HOME/DevOpsProjCert" ]; then
+        git clone https://github.com/designking06/DevOpsProjCert.git
+        fi
 
-                        # Stop and remove existing container if exists
-                        if [ $(sudo docker ps -aq -f name=webapp) ]; then
-                            sudo docker stop webapp
-                            sudo docker rm webapp
-                        fi
+        cd DevOpsProjCert
 
-                        # Run new container
-                        sudo docker run -d -p 80:80 --name webapp webapp:latest
+        # Build image
+        sudo docker build --no-cache -t webapp:latest -f docker/Dockerfile .
 
-                        # Check running containers
-                        sudo docker ps
-                        ENDSSH
-                    '''
+        # Replace container
+        sudo docker rm -f webapp || true
+        sudo docker run -d -p 80:80 --name webapp webapp:latest
+
+        sudo docker ps
+        ENDSSH
+        '''
                 }
             }
         }
+
     }
 
     post {
