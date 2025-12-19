@@ -13,12 +13,15 @@ pipeline {
             }
         }
 
-        stage('Install Puppet Agent (Mocked)') {
+        stage('Job 1 - Install Puppet Agent') {
             steps {
-                sh '''
-                    ssh -o StrictHostKeyChecking=no ubuntu@3.131.141.176 \
-                    "sudo apt update && sudo apt install -y puppet-agent"
-                '''}
+                sshagent(credentials: ['DevOpsProjKey']) {
+                    sh '''
+                        ssh -o StrictHostKeyChecking=no ubuntu@3.131.141.176 \
+                        "sudo apt update && sudo apt install -y puppet-agent"
+                    '''
+                }
+            }
         }
 
         stage('Install Docker w Ansible') {
