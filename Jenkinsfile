@@ -37,12 +37,31 @@ pipeline {
             }
         }
 
-        stage('Docker Build (Mocked)') {
+        stage('Docker Build & Run') {
             steps {
-                sh '''
-                echo "docker build -t php-webapp ."
-                echo "docker run -d php-webapp"
-                '''
+                sshagent(credentials: ['DevOpsProjKey']) {
+                    sh '''
+                    ssh -o StrictHostKeyChecking=no ubuntu@3.131.141.176 << 'ENDSSH'
+                        # Navigate to repo
+                        cd ~/DevOpsProjCert
+
+                        # Build Docker image from docker/Dockerfile
+                        sudo docker build -t webapp:latest -f docker/Dockerfile .
+
+                        # Stop and remove existing container if exists
+                        if [ $(sudo docker ps -aq -f name=webapp) ]; then
+                            sudo docker stop webapp
+                            sudo docker rm webapp
+                        fi
+
+                        # Run new container
+                        sudo docker run -d -p 80:80 --name webapp webapp:latest
+
+                        # Check running containers
+                        sudo docker ps
+                        ENDSSH
+                    '''
+                }
             }
         }
     }
