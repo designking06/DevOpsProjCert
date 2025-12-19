@@ -17,7 +17,7 @@ pipeline {
             steps {
                 sshagent(credentials: ['DevOpsProjKey']) {
                     sh '''
-                        ssh -o StrictHostKeyChecking=no ubuntu@3.131.141.176 \
+                        ssh -o StrictHostKeyChecking=no ubuntu@3.17.73.75 \
                         "sudo apt update && sudo apt install -y puppet-agent"
                     '''
                 }
@@ -30,7 +30,7 @@ pipeline {
                     export PATH=/opt/homebrew/bin:/usr/local/bin:$PATH
                     ansible-playbook --version
                     ansible-playbook ansible/install_docker.yml \
-                      -i 3.131.141.176, \
+                      -i 3.17.73.75, \
                       --user ubuntu \
                       --private-key ~/.ssh/DevOpsProj.pem
                 '''
@@ -41,7 +41,7 @@ pipeline {
             steps {
                 sshagent(credentials: ['DevOpsProjKey']) {
                     sh '''
-                    ssh -o StrictHostKeyChecking=no ubuntu@3.131.141.176 << 'ENDSSH'
+                    ssh -o StrictHostKeyChecking=no ubuntu@3.17.73.75 << 'ENDSSH'
                         # Navigate to repo
                         cd ~/DevOpsProjCert
 
