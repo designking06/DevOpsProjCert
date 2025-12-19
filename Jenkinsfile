@@ -20,15 +20,22 @@ ssh -o StrictHostKeyChecking=no ubuntu@18.222.147.8 \
             }
         }
 
-        stage('Install Docker w Ansible') {
-            steps {
-                sh '''
-ansible-playbook ansible/install_docker.yml \
-  -i 18.222.147.8, \
-  --user ubuntu
-'''
-            }
+stage('Install Docker w Ansible') {
+    steps {
+        sshagent(credentials: ['DevOpsProjKey']) {
+            sh '''
+                export PATH=/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+
+                ansible-playbook --version
+
+                ansible-playbook ansible/install_docker.yml \
+                  -i 18.222.147.8, \
+                  -u ubuntu \
+                  --ssh-extra-args='-o StrictHostKeyChecking=no'
+            '''
         }
+    }
+}
 
         stage('Docker Build & Run') {
             steps {
