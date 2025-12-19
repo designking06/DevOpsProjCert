@@ -46,7 +46,7 @@ pipeline {
                         cd ~/DevOpsProjCert
 
                         # Build Docker image from docker/Dockerfile
-                        sudo docker build -t webapp:latest -f docker/Dockerfile .
+                        sudo docker build --no-cache -t webapp:latest -f docker/Dockerfile .
 
                         # Stop and remove existing container if exists
                         if [ $(sudo docker ps -aq -f name=webapp) ]; then
