@@ -9,14 +9,13 @@ pipeline {
             }
         }
 
-        stage('Job 1 - Install Puppet Agent') {
+        stage('Install Puppet Agent') {
             steps {
                 sshagent(credentials: ['DevOpsProjKey']) {
                     sh '''
-                        ssh -o StrictHostKeyChecking=no ubuntu@18.222.147.8 \
-                        "sudo apt update && command -v puppet || sudo apt install -y puppet-agent
-"
-                    '''
+ssh -o StrictHostKeyChecking=no ubuntu@18.222.147.8 \
+"sudo apt update && command -v puppet || sudo apt install -y puppet-agent"
+'''
                 }
             }
         }
@@ -24,12 +23,10 @@ pipeline {
         stage('Install Docker w Ansible') {
             steps {
                 sh '''
-                    export PATH=/opt/homebrew/bin:/usr/local/bin:$PATH
-                    ansible-playbook --version
-                    ansible-playbook ansible/install_docker.yml \
-                      -i 18.222.147.8, \
-                      --u ubuntu
-                '''
+ansible-playbook ansible/install_docker.yml \
+  -i 18.222.147.8, \
+  --user ubuntu
+'''
             }
         }
 
@@ -37,35 +34,28 @@ pipeline {
             steps {
                 sshagent(credentials: ['DevOpsProjKey']) {
                     sh '''
-        ssh -o StrictHostKeyChecking=no ubuntu@18.222.147.8 << 'ENDSSH'
-        set -e
+ssh -o StrictHostKeyChecking=no ubuntu@18.222.147.8 << 'EOF'
+set -e
 
-        # Ensure repo exists
-        if [ ! -d "$HOME/DevOpsProjCert" ]; then
-        git clone https://github.com/designking06/DevOpsProjCert.git
-        fi
+if ! command -v docker; then
+  echo "Docker not installed" && exit 1
+fi
 
-        cd DevOpsProjCert
+if [ ! -d "$HOME/DevOpsProjCert" ]; then
+  git clone https://github.com/designking06/DevOpsProjCert.git
+fi
 
-        # Build image
-        sudo docker build --no-cache -t webapp:latest -f docker/Dockerfile .
+cd DevOpsProjCert
 
-        # Replace container
-        sudo docker rm -f webapp || true
-        sudo docker run -d -p 80:80 --name webapp webapp:latest
+sudo docker build -t webapp:latest -f docker/Dockerfile .
+sudo docker rm -f webapp || true
+sudo docker run -d -p 80:80 --name webapp webapp:latest
 
-        sudo docker ps
-        ENDSSH
-        '''
+sudo docker ps
+EOF
+'''
                 }
             }
-        }
-
-    }
-
-    post {
-        failure {
-            sh 'echo "Rollback: removing container (mock)"'
         }
     }
 }
