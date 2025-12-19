@@ -15,7 +15,7 @@ pipeline {
 
         stage('Job 1 - Install Puppet Agent') {
             steps {
-                sshagent(credentials: ['WebAppPaC']) {
+                sshagent(credentials: ['DevOpsProjKey']) {
                     sh '''
                         ssh -o StrictHostKeyChecking=no ubuntu@3.131.141.176 \
                         "sudo apt update && sudo apt install -y puppet-agent"
