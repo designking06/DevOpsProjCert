@@ -16,7 +16,7 @@ pipeline {
         stage('Install Puppet Agent (Mocked)') {
             steps {
                 sh '''
-                    ssh -i ~/.ssh/DevOpsProj.pem ubuntu@3.131.141.176 \
+                    ssh -o StrictHostKeyChecking=no ubuntu@3.131.141.176 \
                     "sudo apt update && sudo apt install -y puppet-agent"
                 '''}
         }
