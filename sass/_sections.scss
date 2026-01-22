@@ -1,0 +1,23 @@
+.section {
+  padding: 5rem 0;
+
+  &-dark {
+    background-color: $bg-light;
+  }
+
+  .section-title {
+    margin-bottom: 3rem;
+    text-align: center;
+  }
+}
+
+.project-card {
+  background: #020617;
+  padding: 2rem;
+  border-radius: $radius;
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: translateY(-6px);
+  }
+}

@@ -1,0 +1,48 @@
+.hero {
+  height: 100vh;
+  background: linear-gradient(135deg, #020617, #0f172a);
+}
+.hero .hero-title {
+  font-size: 3rem;
+  font-weight: 700;
+}
+.hero .hero-subtitle {
+  font-size: 1.25rem;
+  margin: 1rem 0 2rem;
+  color: #94a3b8;
+}
+
+.section {
+  padding: 5rem 0;
+}
+.section-dark {
+  background-color: #020617;
+}
+.section .section-title {
+  margin-bottom: 3rem;
+  text-align: center;
+}
+
+.project-card {
+  background: #020617;
+  padding: 2rem;
+  border-radius: 12px;
+  transition: transform 0.3s ease;
+}
+.project-card:hover {
+  transform: translateY(-6px);
+}
+
+.footer {
+  padding: 2rem 0;
+  background: #020617;
+  color: #64748b;
+}
+
+body {
+  font-family: "Inter", sans-serif;
+  background-color: #0f172a;
+  color: #e5e7eb;
+  padding-top: 70px;
+}
+/*# sourceMappingURL=main.css.map */

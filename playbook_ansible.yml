@@ -1,0 +1,65 @@
+---
+# ansible-playbook -i inventory.ini playbook_ansible.yml -K
+- hosts: aws
+  become: true
+  become_user: root
+  gather_facts: true
+
+  vars:
+    web_pkg:
+      Debian: apache2
+      RedHat: httpd
+
+  tasks: 
+    - name: Stop all containers using Port 80
+      shell: |
+        CONTAINERS=$(docker ps -q --filter "publish=80")
+        if [ ! -z "$CONTAINERS" ]; then
+          docker stop $CONTAINERS
+        fi
+      become: true
+      ignore_errors: true # Continue if no containers are running
+    - name: install apache2 package
+      apt:
+        name: apache2
+        state: present
+      #ignore_errors: true
+      when: ansible_facts['os_family'] == "Debian"
+      tags:
+        - install
+    - name: install httpd package
+      yum:
+        name: "{{web_pkg[ansible_facts['os_family']]}}"
+        state: present
+      when: ansible_facts['os_family'] == "Redhat"
+
+    - name: start the service
+      service:
+        name: apache2
+        state: started
+        enabled: yes
+      register: service_status
+      tags:
+        - service
+    - name: start the service
+      service:
+        name: httpd
+        state: started
+        enabled: yes
+      when: ansible_facts['os_family'] == "RedHat"
+      tags:
+        - service
+
+    - name: copy web page 
+      copy:
+        src: /tmp/index.html
+        dest: /var/www/html/
+    
+    - name: restart the service
+      service: 
+        name: httpd
+        state: restarted
+
+    - name: print output
+      debug:
+        var: service_status

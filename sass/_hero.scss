@@ -1,0 +1,15 @@
+.hero {
+  height: 100vh;
+  background: linear-gradient(135deg, #020617, #0f172a);
+
+  .hero-title {
+    font-size: 3rem;
+    font-weight: 700;
+  }
+
+  .hero-subtitle {
+    font-size: 1.25rem;
+    margin: 1rem 0 2rem;
+    color: #94a3b8;
+  }
+}

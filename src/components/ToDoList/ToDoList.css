@@ -1,0 +1,53 @@
+.task-app {
+  margin: 20px 0;
+}
+.task-form-input {
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 200px;
+  margin-right: 10px;
+}
+.task-form-button {
+  padding: 10px 15px;
+  font-size: 16px;
+  border: none;
+  background: #28a745;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.task-list {
+  list-style-type: none;
+  padding: 0;
+}
+.task-list li {
+  margin: 5px 0;
+  padding: 10px;
+  border-radius: 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.task-list li span {
+  flex-grow: 1;
+  text-align: left;
+  padding-right: 5px;
+}
+.task-list li button {
+  border: none;
+  color: white;
+  margin: 0 3px;
+  padding: 2.5px 5px;
+  border-radius: 4px;
+  cursor: pointer;
+  height: 2.5rem;
+  width: 7rem;
+}
+.task-list li .complete-button {
+  background: #0167ff;
+}
+.task-list li .delete-button {
+  background: #ff4d4d;
+}
